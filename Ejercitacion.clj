@@ -1,10 +1,6 @@
 ;; (load-file "Ejercitacion.clj")
 
 
-;; (require '[clojure.string :as s])
-;; (s/join " " '("hola" "mundo"))
-
-
 ;; 1. Definir la función tercer-angulo que reciba los valores de dos de los ángulos interiores de un triángulo y devuelva el valor del restante.
 (defn tercer-angulo [angulo1 angulo2] (println (- 180 (+ angulo1 angulo2))))
 
@@ -158,5 +154,17 @@
                                     (rem v 11)) 0) false
                             :default true))
 
-;; 21. Definir una función para obtener la matriz triangular superior (incluyendo la diagonal principal) de una matriz cuadrada que está representada como una lista de listas.
-(defn matriz-triangular-superior [] )
+;; 21. Definir una función para obtener la matriz triangular superior (incluyendo la diagonal principal) de una matriz cuadrada que está representada como una lista de listas. (matriz-triangular-superior '((1 2 3 10) (4 5 6 11) (7 8 9 12) (13 14 15 16)))
+(defn matriz-triangular-superior
+  ([matriz] (cond
+              (empty? matriz) ("Matriz vacía")
+              (not (let [v (conj (map #(count %) matriz) (count matriz))] (every? #(= (first v) %) v))) (print "No es una matriz cuadrada")
+              :default (matriz-triangular-superior 0 (count matriz) matriz)))
+  ([contador size matriz] (if (not (seq? (first matriz)))
+                            (flatten (conj (flatten (repeat (- (- size contador) 1) 0)) (last (take (- size contador) (iterate #(drop-last %) matriz)))))
+                            (if (empty? (rest matriz))
+                              matriz
+                              (conj (matriz-triangular-superior (inc contador) size (rest matriz)) (matriz-triangular-superior contador size (first matriz)))
+                              ))))
+
+;; (flatten (conj (flatten (repeat (- 2 1) 0)) (last (take 2 (iterate #(drop-last %) (first '((1 2 3) (4 5 6) (7 8 9))))))))
